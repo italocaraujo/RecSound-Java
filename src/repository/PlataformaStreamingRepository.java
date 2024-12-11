@@ -2,39 +2,39 @@ package repository;
 
 import model.Musica;
 import model.Usuario;
+import org.springframework.stereotype.Repository;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository // Informa ao Spring que esta classe deve ser gerenciada como um Bean
 public class PlataformaStreamingRepository implements IPlataformaStreaming {
-    private final List<Musica> catalogo;
-    private final List<Usuario> usuarios;
 
-    public PlataformaStreamingRepository() {
-        this.catalogo = new ArrayList<>();
-        this.usuarios = new ArrayList<>();
-    }
+    // Listas para armazenar dados em memória
+    private final List<Musica> musicas = new ArrayList<>();
+    private final List<Usuario> usuarios = new ArrayList<>();
 
     @Override
     public void adicionarMusica(Musica musica) {
-        catalogo.add(musica);
+        musicas.add(musica);
     }
 
     @Override
     public void removerMusica(String titulo) {
-        catalogo.removeIf(musica -> musica.toString().contains(titulo));
+        musicas.removeIf(musica -> musica.getTitulo().equalsIgnoreCase(titulo));
     }
 
     @Override
     public Musica buscarMusica(String titulo) {
-        return catalogo.stream()
-                .filter(musica -> musica.toString().contains(titulo))
+        return musicas.stream()
+                .filter(musica -> musica.getTitulo().equalsIgnoreCase(titulo))
                 .findFirst()
                 .orElse(null);
     }
 
     @Override
     public List<Musica> listarMusicas() {
-        return new ArrayList<>(catalogo);
+        return new ArrayList<>(musicas);
     }
 
     @Override
@@ -44,13 +44,13 @@ public class PlataformaStreamingRepository implements IPlataformaStreaming {
 
     @Override
     public void removerUsuario(String nome) {
-        usuarios.removeIf(usuario -> usuario.getNome().equals(nome));
+        usuarios.removeIf(usuario -> usuario.getNome().equalsIgnoreCase(nome));
     }
 
     @Override
     public Usuario buscarUsuario(String nome) {
         return usuarios.stream()
-                .filter(usuario -> usuario.getNome().equals(nome))
+                .filter(usuario -> usuario.getNome().equalsIgnoreCase(nome))
                 .findFirst()
                 .orElse(null);
     }

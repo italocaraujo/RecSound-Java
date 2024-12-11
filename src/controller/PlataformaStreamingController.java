@@ -2,28 +2,45 @@ package controller;
 
 import model.Musica;
 import model.Usuario;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 import service.PlataformaStreamingService;
 
+import java.util.List;
+
+@RestController // Define esta classe como um controlador REST gerenciado pelo Spring
+@RequestMapping("/api/streaming") // Define o prefixo para os endpoints deste controlador
 public class PlataformaStreamingController {
+
     private final PlataformaStreamingService streamingService;
 
+    @Autowired // Injeta automaticamente o serviço no construtor
     public PlataformaStreamingController(PlataformaStreamingService streamingService) {
         this.streamingService = streamingService;
     }
 
-    public void adicionarMusica(String titulo, String artista, String letra, String nomeGenero) {
+    // Endpoint para adicionar uma música
+    @PostMapping("/musicas")
+    public void adicionarMusica(@RequestParam String titulo, @RequestParam String artista,
+                                @RequestParam(required = false) String letra, @RequestParam String nomeGenero) {
         streamingService.adicionarMusica(titulo, artista, letra, nomeGenero);
     }
 
-    public void listarMusicas() {
-        streamingService.listarMusicas().forEach(System.out::println);
+    // Endpoint para listar músicas
+    @GetMapping("/musicas")
+    public List<Musica> listarMusicas() {
+        return streamingService.listarMusicas();
     }
 
-    public void cadastrarUsuario(String nome) {
+    // Endpoint para cadastrar um usuário
+    @PostMapping("/usuarios")
+    public void cadastrarUsuario(@RequestParam String nome) {
         streamingService.cadastrarUsuario(nome);
     }
 
-    public void listarUsuarios() {
-        streamingService.listarUsuarios().forEach(usuario -> System.out.println(usuario.getNome()));
+    // Endpoint para listar usuários
+    @GetMapping("/usuarios")
+    public List<Usuario> listarUsuarios() {
+        return streamingService.listarUsuarios();
     }
 }
